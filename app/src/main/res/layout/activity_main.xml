@@ -41,6 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Inicio de sesión"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="30dp"
+                android:textColor="#db1b16"
+                />
+
+
 
 
 
