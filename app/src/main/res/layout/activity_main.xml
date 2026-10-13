@@ -8,8 +8,9 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:layout_width="odp"
-        android:layout_height="odp"
+        android:id="@+id/imgFondo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:src="@drawable/fondopokemon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,6 +19,7 @@
         />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
@@ -31,6 +33,7 @@
 
 
         <LinearLayout
+            android:id="@+id/layoutContenido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -38,6 +41,7 @@
             android:padding="28dp">
 
             <TextView
+                android:id="@+id/tvTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Inicio de sesión"
@@ -49,6 +53,7 @@
                 />
             
             <EditText
+                android:id="@+id/etCorreo"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:background="@drawable/bg_imput"
@@ -64,6 +69,7 @@
                 />
 
             <EditText
+                android:id="@+id/etPass"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:background="@drawable/bg_imput"
@@ -79,6 +85,7 @@
                 />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnIngresar"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:text="Ingresar"
@@ -88,6 +95,7 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/tvCrearCuenta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Crea una cuenta"
