@@ -47,8 +47,44 @@
                 android:layout_marginBottom="30dp"
                 android:textColor="#db1b16"
                 />
+            
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/bg_imput"
+                android:hint="Correo"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="#E24844"
+                android:inputType="textEmailAddress"
+                android:drawableStart="@drawable/email"
+                android:drawablePadding="10dp"
+                android:layout_marginBottom="20dp"
+                />
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/bg_imput"
+                android:hint="Contraseña"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="#E24844"
+                android:inputType="textPassword"
+                android:drawableStart="@drawable/password"
+                android:drawablePadding="10dp"
+                android:layout_marginBottom="20dp"
+                />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="Ingresar"
+                android:background="@drawable/bg_button"
+                android:layout_marginTop="30dp"
+                android:textColor="#ffffff"
 
 
 
