@@ -85,8 +85,17 @@
                 android:background="@drawable/bg_button"
                 android:layout_marginTop="30dp"
                 android:textColor="#ffffff"
+                android:textStyle="bold"/>
 
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Crea una cuenta"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#db1b16"
+                android:layout_marginTop="30dp"
+               />
 
         </LinearLayout>
 
