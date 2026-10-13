@@ -18,7 +18,8 @@ class MainActivity : AppCompatActivity() {
 
         tvCrearCuenta.setOnClickListener {
 
-            val intent = Intent
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 }
