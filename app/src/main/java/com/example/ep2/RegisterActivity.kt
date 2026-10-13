@@ -1,20 +1,59 @@
 package com.example.ep2
 
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class RegisterActivity : AppCompatActivity() {
+    private lateinit var etNombre : EditText
+    private lateinit var etCorreo : EditText
+    private lateinit var etPassword : EditText
+    private lateinit var btnRegistrar : Button
+
+    private lateinit var dbHelper: DatabaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_register)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        etNombre = findViewById(R.id.etNombre)
+        etCorreo = findViewById(R.id.etCorreo)
+        etPassword = findViewById(R.id.etPass)
+        btnRegistrar = findViewById(R.id.btnRegistrar)
+
+        dbHelper = DatabaseHelper(this)
+
+        btnRegistrar.setOnClickListener {
+            registrarUsuario()
         }
     }
+
+    private fun registrarUsuario(){
+        val nombre = etNombre.text.toString().trim()
+        val correo = etCorreo.text.toString().trim()
+        val password = etPassword.text.toString().trim()
+
+        if(nombre.isEmpty() || correo.isEmpty() || password.isEmpty()){
+            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val registro = dbHelper.registrarUsuario(nombre, correo, password)
+
+        if (registro){
+            Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
+            finish()
+        }else{
+            Toast.makeText(this, "Error al registrar :(", Toast.LENGTH_SHORT).show()
+            finish()
+
+        }
+    }
+
 }
