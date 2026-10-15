@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         //Evento para iniciar sesion
         btnIngresar.setOnClickListener {
             //llamar metodo de login
-
+            iniciarSesion()
         }
 
         tvCrearCuenta.setOnClickListener {
@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
-
         }else{
             //El resultado es falso
             Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
