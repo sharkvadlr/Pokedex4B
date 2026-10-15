@@ -64,7 +64,13 @@ class MainActivity : AppCompatActivity() {
             //El resultado es true
             Toast.makeText(this, "Bienvenido (˶ˆᗜˆ˵)", Toast.LENGTH_SHORT).show()
 
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
 
+        }else{
+            //El resultado es falso
+            Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
         }
     }
 }
