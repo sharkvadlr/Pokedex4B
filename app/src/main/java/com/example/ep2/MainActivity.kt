@@ -1,5 +1,6 @@
 package com.example.ep2
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -10,6 +11,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
+import android.widget.ImageView
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var etCorreo : EditText
@@ -22,6 +27,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+
+        val imgPokebola = findViewById<ImageView>(R.id.imgFondo)
+
+        val animacion = RotateAnimation(
+            -15f,
+            15f,
+            Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, 1.0f
+        ).apply {
+            duration = 300
+            repeatMode = Animation.REVERSE
+            repeatCount = Animation.INFINITE
+        }
+
+        imgPokebola.startAnimation(animacion)
 
         val tvCrearCuenta = findViewById<TextView>(R.id.tvCrearCuenta)
 
@@ -45,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
 
     //METODO LOGIN
     private fun iniciarSesion(){
