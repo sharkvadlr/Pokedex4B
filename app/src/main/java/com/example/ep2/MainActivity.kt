@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             Animation.RELATIVE_TO_SELF, 0.5f,
             Animation.RELATIVE_TO_SELF, 1.0f
         ).apply {
-            duration = 300
+            duration = 600
             repeatMode = Animation.REVERSE
             repeatCount = Animation.INFINITE
         }

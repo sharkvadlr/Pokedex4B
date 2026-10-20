@@ -1,5 +1,6 @@
 package com.example.ep2
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -11,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
+import android.widget.TextView
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var etNombre : EditText
@@ -25,6 +27,13 @@ class RegisterActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_register)
 
+        val tvInicioSesion = findViewById<TextView>(R.id.tvIniciarSesion)
+
+        tvInicioSesion.setOnClickListener {
+            val intent = Intent(this, tvInicioSesion::class.java)
+            startActivity(intent)
+        }
+
         val imgPokebola = findViewById<ImageView>(R.id.imgFondo)
 
         val animacion = RotateAnimation(
@@ -33,12 +42,14 @@ class RegisterActivity : AppCompatActivity() {
             Animation.RELATIVE_TO_SELF, 0.5f,
             Animation.RELATIVE_TO_SELF, 1.0f
         ).apply {
-            duration = 300
+            duration = 600
             repeatMode = Animation.REVERSE
             repeatCount = Animation.INFINITE
         }
 
         imgPokebola.startAnimation(animacion)
+
+
 
         etNombre = findViewById(R.id.etNombre)
         etCorreo = findViewById(R.id.etCorreo)
