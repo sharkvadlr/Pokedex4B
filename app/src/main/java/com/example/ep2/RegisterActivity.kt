@@ -8,6 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
+import android.widget.ImageView
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var etNombre : EditText
@@ -21,6 +24,21 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_register)
+
+        val imgPokebola = findViewById<ImageView>(R.id.imgFondo)
+
+        val animacion = RotateAnimation(
+            -15f,
+            15f,
+            Animation.RELATIVE_TO_SELF, 0.5f,
+            Animation.RELATIVE_TO_SELF, 1.0f
+        ).apply {
+            duration = 300
+            repeatMode = Animation.REVERSE
+            repeatCount = Animation.INFINITE
+        }
+
+        imgPokebola.startAnimation(animacion)
 
         etNombre = findViewById(R.id.etNombre)
         etCorreo = findViewById(R.id.etCorreo)
