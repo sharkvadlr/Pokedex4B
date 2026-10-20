@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         val tvCrearCuenta = findViewById<TextView>(R.id.tvCrearCuenta)
 
         etCorreo = findViewById(R.id.etCorreo)
-        etPassword = findViewById(R.id.etPass)
+        etPassword = findViewById(R.id.etPassword)
         btnIngresar = findViewById(R.id.btnIngresar)
 
         dbHelper = DatabaseHelper(this)
