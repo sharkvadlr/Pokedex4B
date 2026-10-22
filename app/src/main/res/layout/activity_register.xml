@@ -133,11 +133,12 @@
         android:textAllCaps="false"
         android:textColor="#ffffff"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvIniciarSesion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardLogin"
-        app:layout_constraintVertical_bias="0.3" />
+        />
+
     <TextView
         android:id="@+id/tvIniciarSesion"
         android:layout_width="wrap_content"
@@ -154,7 +155,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnRegistrar"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintTop_toBottomOf="@id/btnRegistrar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
