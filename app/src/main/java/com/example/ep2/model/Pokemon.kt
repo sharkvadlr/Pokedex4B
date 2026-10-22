@@ -1,28 +1,17 @@
 package com.example.ep2.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Pokemon(
 
-    val id : String?
-    val name
-    val base_experience
-    val height
-    val is_default
-    val order
-    val weight
-    val abilities
-    val forms
-    val game_indices
-    val held_items
-    val location_area_encounters
-    val moves
-    val past_types
-    val past_abilities
-    val past_stats
-    val sprites
-    val cries
-    val species
-    val statsval
-    val types
+    val id : Int?,
+    val name : String?,
+    val height : Int?,
+    val weight : Int?,
+    val sprites: PokemonSprites?,
+)
 
-
+data class PokemonSprites(
+    @SerializedName("front_default") val frontDefault: String?,
+    @SerializedName("back_default") val backDefault: String?
 )
