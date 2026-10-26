@@ -1,65 +1,66 @@
 package com.example.ep2
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.os.Bundle
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
+import com.example.ep2.model.Pokemon
+import com.example.ep2.network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomeActivity : AppCompatActivity() {
+
+    private lateinit var tvResultado: TextView
+    private lateinit var imgPoke: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
 
-        val pokedexView : ImageView = findViewById(R.id.imgPokedex)
+        tvResultado = findViewById(R.id.tvResultado)
+        imgPoke = findViewById(R.id.imgPoke)
 
-        iniciarAnimacionFlotanteYRotacion(pokedexView)
-
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        obtenerPokemon("tapu-koko")
     }
 
-    private fun iniciarAnimacionFlotanteYRotacion(viewToAnimate : ImageView) {
+    private fun obtenerPokemon(nombrePokemon: String) {
+        RetrofitClient.api.obtenerPokemon(nombrePokemon).enqueue(object : Callback<Pokemon> {
+            override fun onResponse(
+                call: Call<Pokemon>,
+                response: Response<Pokemon>
+            ) {
+                if (response.isSuccessful) {
+                    val pokemon = response.body()
 
-        val distance = 8000
-        val scale = viewToAnimate.resources.displayMetrics.density
-        viewToAnimate.cameraDistance = distance * scale
+                    if (pokemon != null) {
+                        tvResultado.text =
+                            "Nombre: ${pokemon.name?.replaceFirstChar { it.uppercase() }} \n\n" +
+                                    "ID: #${pokemon.id} \n\n" +
+                                    "Altura: ${pokemon.height} \n\n" +
+                                    "Peso: ${pokemon.weight} \n\n"
 
-        val translateY = ObjectAnimator.ofFloat(
-            viewToAnimate,
-            "translationY",
-            0f, -40f
-        ).apply {
-            duration = 2000
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.REVERSE
-            interpolator = AccelerateDecelerateInterpolator()
-        }
+                        val imageUrl = pokemon.obtenerImagen()
 
-        val rotate = ObjectAnimator.ofFloat(
-            viewToAnimate,
-            "rotationY",
-            0f, 360f
-        ).apply {
-            duration = 5500
-            repeatCount = ValueAnimator.INFINITE
-            interpolator = LinearInterpolator()
-        }
+                        Glide.with(this@HomeActivity)
+                            .load(imageUrl)
+                            .into(imgPoke)
+                    } else {
+                        Toast.makeText(this@HomeActivity, "Pokémon no encontrado", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this@HomeActivity, "Pokémon no encontrado", Toast.LENGTH_SHORT).show()
+                }
+            }
 
-        AnimatorSet().apply {
-            playTogether(translateY, rotate)
-            start()
-        }
+            override fun onFailure(call: Call<Pokemon>, t: Throwable) {
+                Toast.makeText(this@HomeActivity, "Error en la red o en el API", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
