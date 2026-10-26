@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.ep2.model.Pokemon
+import com.example.ep2.model.PokeResponse
 import com.example.ep2.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,40 +27,44 @@ class HomeActivity : AppCompatActivity() {
         tvResultado = findViewById(R.id.tvResultado)
         imgPoke = findViewById(R.id.imgPoke)
 
-        obtenerPokemon("tapu-koko")
+        obtenerPokemon("pikachu")
     }
 
     private fun obtenerPokemon(nombrePokemon: String) {
-        RetrofitClient.api.obtenerPokemon(nombrePokemon).enqueue(object : Callback<Pokemon> {
+        RetrofitClient.api.obtenerPokemon(nombrePokemon).enqueue(object : Callback<PokeResponse> {
             override fun onResponse(
-                call: Call<Pokemon>,
-                response: Response<Pokemon>
+                call: Call<PokeResponse>,
+                response: Response<PokeResponse>
             ) {
-                if (response.isSuccessful) {
-                    val pokemon = response.body()
+                val pokeResponse = response.body()
 
-                    if (pokemon != null) {
-                        tvResultado.text =
-                            "Nombre: ${pokemon.name?.replaceFirstChar { it.uppercase() }} \n\n" +
-                                    "ID: #${pokemon.id} \n\n" +
-                                    "Altura: ${pokemon.height} \n\n" +
-                                    "Peso: ${pokemon.weight} \n\n"
+                if (response.isSuccessful && pokeResponse != null) {
+                    val pokemon = Pokemon(
+                        id = pokeResponse.id,
+                        name = pokeResponse.name,
+                        height = pokeResponse.height,
+                        weight = pokeResponse.weight,
+                        sprites = pokeResponse.sprites
+                    )
 
-                        val imageUrl = pokemon.obtenerImagen()
+                    tvResultado.text =
+                        "Nombre: ${pokemon.name?.replaceFirstChar { it.uppercase() }} \n\n" +
+                                "ID: #${pokemon.id} \n\n" +
+                                "Altura: ${pokemon.height} \n\n" +
+                                "Peso: ${pokemon.weight} \n\n"
 
-                        Glide.with(this@HomeActivity)
-                            .load(imageUrl)
-                            .into(imgPoke)
-                    } else {
-                        Toast.makeText(this@HomeActivity, "Pokémon no encontrado", Toast.LENGTH_SHORT).show()
-                    }
+                    val imageUrl = pokemon.obtenerImagen()
+
+                    Glide.with(this@HomeActivity)
+                        .load(imageUrl)
+                        .into(imgPoke)
                 } else {
                     Toast.makeText(this@HomeActivity, "Pokémon no encontrado", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<Pokemon>, t: Throwable) {
-                Toast.makeText(this@HomeActivity, "Error en la red o en el API", Toast.LENGTH_SHORT).show()
+            override fun onFailure(call: Call<PokeResponse>, t: Throwable) {
+                Toast.makeText(this@HomeActivity, "Error en la API", Toast.LENGTH_SHORT).show()
             }
         })
     }

@@ -26,6 +26,7 @@
         android:textAlignment="center"
         android:textSize="50sp"
         android:textStyle="bold"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/imgFondo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tvTitulo"
