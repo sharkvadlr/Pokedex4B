@@ -27,11 +27,13 @@ class HomeActivity : AppCompatActivity() {
         tvResultado = findViewById(R.id.tvResultado)
         imgPoke = findViewById(R.id.imgPoke)
 
-        obtenerPokemon("pikachu")
+        obtenerPokemon()
     }
 
-    private fun obtenerPokemon(nombrePokemon: String) {
-        RetrofitClient.api.obtenerPokemon(nombrePokemon).enqueue(object : Callback<PokeResponse> {
+    private fun obtenerPokemon() {
+        RetrofitClient.api.obtenerPokemon(
+            nombre = "pikachu"
+        ).enqueue(object : Callback<PokeResponse> {
             override fun onResponse(
                 call: Call<PokeResponse>,
                 response: Response<PokeResponse>
