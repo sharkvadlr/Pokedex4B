@@ -2,6 +2,7 @@ package com.example.ep2
 
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -17,7 +18,7 @@ import retrofit2.Response
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var tvResultado: TextView
-    private lateinit var imgPoke: ImageView
+    private lateinit var contenedorPokemon: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,14 +26,16 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         tvResultado = findViewById(R.id.tvResultado)
-        imgPoke = findViewById(R.id.imgPoke)
+        contenedorPokemon = findViewById(R.id.contenedorPokemon)
 
         obtenerPokemon()
     }
 
-    private fun obtenerPokemon() {
+    private fun obtenerPokemon(generacion : String, contenedor : LinearLayout) {
+
         RetrofitClient.api.obtenerPokemon(
             nombre = "pikachu"
+
         ).enqueue(object : Callback<PokeResponse> {
             override fun onResponse(
                 call: Call<PokeResponse>,
