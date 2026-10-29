@@ -1,10 +1,15 @@
 package com.example.ep2.model
 
-import com.example.ep2.model.Pokemon.Sprites
+import com.google.gson.annotations.SerializedName
+
 data class PokeResponse(
     val id: Int?,
     val name: String?,
-    val height: Int?,
-    val weight: Int?,
-    val sprites: Sprites?
+    @SerializedName("pokemon_species")
+    val pokemonSpecies: List<PokemonSpecies>?
+)
+
+data class PokemonSpecies(
+    val name: String?,
+    val url: String?
 )

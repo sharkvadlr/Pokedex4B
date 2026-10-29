@@ -12,8 +12,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#101818"
-        android:padding="25dp">
+        android:background="#101818">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,10 +25,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginTop="10dp"
-                android:textColor="@color/white"
                 android:text="Cargando"
-                android:textSize="15sp"/>
-
+                android:textColor="@color/white"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tvPokemon"
@@ -39,31 +37,18 @@
                 android:text="Pokemon"
                 android:textColor="@color/white"
                 android:textSize="25sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
-
-            <HorizontalScrollView
+            <!-- Contenedor vertical principal donde se agregarán las filas de cada generación -->
+            <LinearLayout
+                android:id="@+id/contenedorPokemon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:clipToPadding="false"
-                android:fillViewport="false"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:scrollbars="none">
-
-
-            <LinearLayout
-                android:id="@+id/contenedorPokemon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"/>
-
-            </HorizontalScrollView>
+                android:orientation="vertical" />
 
         </LinearLayout>
 
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

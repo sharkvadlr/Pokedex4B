@@ -31,4 +31,16 @@ data class Pokemon(
         @SerializedName("front_default")
         val frontDefault: String?
     )
+
+    data class GenerationResponse(
+        val id: Int?,
+        val name: String?,
+        @SerializedName("pokemon_species")
+        val pokemonSpecies: List<PokemonSpecies>?
+    )
+
+    data class PokemonSpecies(
+        val name: String?,
+        val url: String?
+    )
 }
