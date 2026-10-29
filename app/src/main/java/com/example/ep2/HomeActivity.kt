@@ -1,6 +1,7 @@
 package com.example.ep2
 
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -25,13 +26,13 @@ class HomeActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
 
-        tvResultado = findViewById(R.id.tvResultado)
+        tvResultado = findViewById(R.id.tvEstado)
         contenedorPokemon = findViewById(R.id.contenedorPokemon)
 
-        obtenerPokemon()
+        obtenerPokemon("Pikachu", contenedorPokemon)
     }
 
-    private fun obtenerPokemon(generacion : String, contenedor : LinearLayout) {
+    private fun obtenerPokemon(nombre : String, contenedor : LinearLayout) {
 
         RetrofitClient.api.obtenerPokemon(
             nombre = "pikachu"
@@ -44,25 +45,11 @@ class HomeActivity : AppCompatActivity() {
                 val pokeResponse = response.body()
 
                 if (response.isSuccessful && pokeResponse != null) {
-                    val pokemon = Pokemon(
-                        id = pokeResponse.id,
-                        name = pokeResponse.name,
-                        height = pokeResponse.height,
-                        weight = pokeResponse.weight,
-                        sprites = pokeResponse.sprites
-                    )
 
-                    tvResultado.text =
-                        "Nombre: ${pokemon.name?.replaceFirstChar { it.uppercase() }} \n\n" +
-                                "ID: #${pokemon.id} \n\n" +
-                                "Altura: ${pokemon.height} \n\n" +
-                                "Peso: ${pokemon.weight} \n\n"
+                    tvResultado.visibility = View.GONE
+                    mostrarPokemon(pokemon, contenedor)
 
-                    val imageUrl = pokemon.obtenerImagen()
 
-                    Glide.with(this@HomeActivity)
-                        .load(imageUrl)
-                        .into(imgPoke)
                 } else {
                     Toast.makeText(this@HomeActivity, "Pokémon no encontrado", Toast.LENGTH_SHORT).show()
                 }
@@ -73,4 +60,36 @@ class HomeActivity : AppCompatActivity() {
             }
         })
     }
-}
+
+    private fun mostrarPokemon(pokemones: List<Pokemon>, contenedor: LinearLayout){
+
+        contenedor.removeAllViews()
+
+        for (pokemon in pokemones){
+
+            val vistaPokemon = layoutInflater.inflate(
+                R.layout.item_pokemon,
+                contenedor,
+                false
+            )
+
+            val imgPokemon = vistaPokemon.findViewById<ImageView>(R.id.imgPokemon)
+            val tvNombrePokemon = vistaPokemon.findViewById<TextView>(R.id.tvNombrePokemon)
+            val tvIdPokemon = vistaPokemon.findViewById<TextView>(R.id.tvIDPokemon)
+
+            tvNombrePokemon.text = pokemon.name ?: "Pokemon sin nombre"
+            tvIdPokemon.text = pokemon.id ?: "ID desconocido"
+
+            Glide.with(this@HomeActivity)
+                .load(pokemon.obtenerImagen())
+                .into(imgPokemon)
+        }
+
+    }
+
+
+
+
+
+    }
+
