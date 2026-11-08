@@ -49,7 +49,7 @@ class DetailsActivity : AppCompatActivity() {
         val pesoKg = pesoPokemon / 10.0
         tvDetallesPokemon.text = "Altura: ${alturaMetros} m | Peso: ${pesoKg} kg"
 
-        // Glide renderiza el GIF animado automáticamente
+
         Glide.with(this)
             .asGif()
             .load(imagenPokemon)
