@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -48,7 +47,6 @@ class HomeActivity : AppCompatActivity() {
                     val pokeResponse = response.body()!!
                     val especies = pokeResponse.pokemonSpecies ?: emptyList()
 
-                    // Inflamos la sección de la generación
                     val vistaSeccion = layoutInflater.inflate(
                         R.layout.item_pokemon,
                         contenedorPokemon,
@@ -56,34 +54,31 @@ class HomeActivity : AppCompatActivity() {
                     )
 
                     val tvNombreGeneracion = vistaSeccion.findViewById<TextView>(R.id.tvTitulo)
-                    val contenedorHorizontal = vistaSeccion.findViewById<LinearLayout>(R.id.contenedorPokemon)
+                    val contenedorHorizontal = vistaSeccion.findViewById<LinearLayout>(R.id.contenedorHorizontal)
 
                     tvNombreGeneracion.text = "Generación $genIdActual"
-
                     contenedorPokemon.addView(vistaSeccion)
 
-                    // ORDENAR POKÉMON POR ID EXTRAYÉNDOLO DE LA URL
                     val especiesOrdenadas = especies.sortedBy { especie ->
                         especie.url?.trimEnd('/')?.substringAfterLast('/')?.toIntOrNull() ?: Int.MAX_VALUE
                     }
 
-                    // 1. Primero creamos e insertamos los placeholders en el orden correcto
-                    for (especie in especiesOrdenadas) {
+                    val limite = if (especiesOrdenadas.size > 15) 15 else especiesOrdenadas.size
+
+                    for (i in 0 until limite) {
+                        val especie = especiesOrdenadas[i]
                         especie.name?.let { nombre ->
                             val vistaPokemon = layoutInflater.inflate(
                                 R.layout.item_card_pokemon,
                                 contenedorHorizontal,
                                 false
                             )
-                            // Insertamos la vista vacía inmediatamente en el contenedor horizontal
-                            contenedorHorizontal.addView(vistaPokemon)
 
-                            // 2. Cargamos los datos del Pokémon para esa vista en específico
+                            contenedorHorizontal.addView(vistaPokemon)
                             obtenerYMostrarPokemonIndividual(nombre, vistaPokemon)
                         }
                     }
 
-                    // Pasar a la siguiente generación
                     cargarGeneracionSecuencial(genIdActual + 1, maxGen)
                 } else {
                     cargarGeneracionSecuencial(genIdActual + 1, maxGen)
@@ -105,9 +100,7 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<Pokemon>, t: Throwable) {
-                // Si falla, se puede ocultar o dejar la vista
-            }
+            override fun onFailure(call: Call<Pokemon>, t: Throwable) {}
         })
     }
 
@@ -130,9 +123,9 @@ class HomeActivity : AppCompatActivity() {
                 val intent = Intent(this@HomeActivity, DetailsActivity::class.java).apply {
                     putExtra("ID_POKEMON", idPokemon.toString())
                     putExtra("NOMBRE_POKEMON", pokemon.name)
-                    putExtra("ALTURA_POKEMON", pokemon.height)
-                    putExtra("PESO_POKEMON", pokemon.weight)
-                    putExtra("IMG_POKEMON", pokemon.obtenerImagen())
+                    putExtra("ALTURA_POKEMON", pokemon.height ?: 0)
+                    putExtra("PESO_POKEMON", pokemon.weight ?: 0)
+                    putExtra("IMG_POKEMON", pokemon.obtenerGif()) // 👈 Envía el GIF animado
                 }
                 startActivity(intent)
             }

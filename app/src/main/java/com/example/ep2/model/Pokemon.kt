@@ -9,22 +9,34 @@ data class Pokemon(
     val weight: Int?,
     val sprites: Sprites?
 ) {
+    // Imagen estática para el Home
     fun obtenerImagen(): String {
         return sprites?.other?.officialArtwork?.frontDefault
             ?: sprites?.frontDefault
             ?: ""
     }
 
+    // GIF animado para la vista de detalle
+    fun obtenerGif(): String {
+        return sprites?.other?.showdown?.frontDefault
+            ?: sprites?.versions?.generationV?.blackWhite?.animated?.frontDefault
+            ?: obtenerImagen()
+    }
+
     data class Sprites(
         @SerializedName("front_default")
         val frontDefault: String?,
         @SerializedName("other")
-        val other: OtherSprites?
+        val other: OtherSprites?,
+        @SerializedName("versions")
+        val versions: Versions?
     )
 
     data class OtherSprites(
         @SerializedName("official-artwork")
-        val officialArtwork: OfficialArtwork?
+        val officialArtwork: OfficialArtwork?,
+        @SerializedName("showdown")
+        val showdown: Showdown?
     )
 
     data class OfficialArtwork(
@@ -32,15 +44,28 @@ data class Pokemon(
         val frontDefault: String?
     )
 
-    data class GenerationResponse(
-        val id: Int?,
-        val name: String?,
-        @SerializedName("pokemon_species")
-        val pokemonSpecies: List<PokemonSpecies>?
+    data class Showdown(
+        @SerializedName("front_default")
+        val frontDefault: String?
     )
 
-    data class PokemonSpecies(
-        val name: String?,
-        val url: String?
+    data class Versions(
+        @SerializedName("generation-v")
+        val generationV: GenerationV?
+    )
+
+    data class GenerationV(
+        @SerializedName("black-white")
+        val blackWhite: BlackWhite?
+    )
+
+    data class BlackWhite(
+        @SerializedName("animated")
+        val animated: Animated?
+    )
+
+    data class Animated(
+        @SerializedName("front_default")
+        val frontDefault: String?
     )
 }

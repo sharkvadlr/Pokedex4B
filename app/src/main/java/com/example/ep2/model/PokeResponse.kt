@@ -7,9 +7,9 @@ data class PokeResponse(
     val name: String?,
     @SerializedName("pokemon_species")
     val pokemonSpecies: List<PokemonSpecies>?
-)
-
-data class PokemonSpecies(
-    val name: String?,
-    val url: String?
-)
+) {
+    data class PokemonSpecies(
+        val name: String?,
+        val url: String?
+    )
+}

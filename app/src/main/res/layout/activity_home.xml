@@ -5,14 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#101818"
+    android:background="@drawable/pokemon_grass"
     android:padding="25dp"
     tools:context=".HomeActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#101818">
+        android:background="@drawable/pokemon_grass">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +39,6 @@
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
-            <!-- Contenedor vertical principal donde se agregarán las filas de cada generación -->
             <LinearLayout
                 android:id="@+id/contenedorPokemon"
                 android:layout_width="match_parent"
