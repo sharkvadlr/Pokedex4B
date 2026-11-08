@@ -9,14 +9,12 @@ data class Pokemon(
     val weight: Int?,
     val sprites: Sprites?
 ) {
-    // Imagen estática para el Home
     fun obtenerImagen(): String {
         return sprites?.other?.officialArtwork?.frontDefault
             ?: sprites?.frontDefault
             ?: ""
     }
 
-    // GIF animado para la vista de detalle
     fun obtenerGif(): String {
         return sprites?.other?.showdown?.frontDefault
             ?: sprites?.versions?.generationV?.blackWhite?.animated?.frontDefault
