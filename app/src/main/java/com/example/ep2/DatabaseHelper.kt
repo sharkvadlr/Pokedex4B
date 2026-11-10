@@ -48,12 +48,12 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
 
         private const val crearTablaFavoritos = """
             CREATE TABLE $TABLE_FAVORITOS(
-                $COL_ID_FAVORITO INTEGER PRIMARY KEY AUTOINCREMENT,
-                $COL_ID_POKEMON,
-                $COL_NOMBRE_POKEMON,
-                $COL_ALTURA_POKEMON,
-                $COL_PESO_P0KEMON,
-                $COL_IMAGEN
+                $COL_ID_FAVORITO INTEGER PRIMARY KEY,
+                $COL_ID_POKEMON INTEGER UNIQUE NOT NULL,
+                $COL_NOMBRE_POKEMON TEXT NOT NULL,
+                $COL_ALTURA_POKEMON TEXT,
+                $COL_PESO_P0KEMON TEXT,
+                $COL_IMAGEN TEXT
             )
         """
     }
