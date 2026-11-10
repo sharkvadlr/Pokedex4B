@@ -30,6 +30,7 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
 
         //INFO DE LA TABLA FAVORITOS
         private const val TABLE_FAVORITOS = "pokemonFavorito"
+        private const val COL_ID_FAVORITO = "id"
         private const val COL_ID_POKEMON = "idPokemon"
         private const val COL_NOMBRE_POKEMON = "nombrePokemom"
         private const val COL_ALTURA_POKEMON = "alturaPokemon"
@@ -45,7 +46,16 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
             )
             """
 
-
+        private const val crearTablaFavoritos = """
+            CREATE TABLE $TABLE_FAVORITOS(
+                $COL_ID_FAVORITO INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COL_ID_POKEMON,
+                $COL_NOMBRE_POKEMON,
+                $COL_ALTURA_POKEMON,
+                $COL_PESO_P0KEMON,
+                $COL_IMAGEN
+            )
+        """
     }
 
     //Metodo onCreate --- Crea la BD
