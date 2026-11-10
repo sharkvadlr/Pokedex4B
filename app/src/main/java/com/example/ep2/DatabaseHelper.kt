@@ -126,7 +126,27 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
     }
 
     //METODO PARA GUARDAR LA INFORMACION DEL API
-    fun guardarPokemonFavorito(idPokemon: Long, nombrePokemon: String, alturaPokemon: String, pesoPokemon: ){
+    fun guardarPokemonFavorito(idPokemon: Long, nombrePokemon: String, alturaPokemon: String, pesoPokemon: String, imagenPokemon: String) : Boolean {
 
+        val db = writableDatabase
+
+        //Crear la variable par pasar los valores de la API
+        val valores = ContentValues().apply {
+
+            put(COL_ID_POKEMON, idPokemon)
+            put(COL_NOMBRE_POKEMON, nombrePokemon)
+            put(COL_ALTURA_POKEMON, alturaPokemon)
+            put(COL_PESO_P0KEMON, pesoPokemon)
+            put(COL_IMAGEN, imagenPokemon)
+        }
+
+        val resultado = db.insertWithOnConflict(
+            TABLE_FAVORITOS,
+            null,
+            valores,
+            SQLiteDatabase.CONFLICT_IGNORE
+        )
+
+        return resultado != -1L
     }
 }
