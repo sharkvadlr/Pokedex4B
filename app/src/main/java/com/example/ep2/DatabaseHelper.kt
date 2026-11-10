@@ -27,21 +27,31 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         private const val COL_NOMBRE = "nombre"
         private const val COL_CORREO = "correo"
         private const val COL_PASSWORD = "password"
-    }
 
-    //Metodo onCreate --- Crea la BD
-    override fun onCreate(db: SQLiteDatabase?) {
-        //Crear la tabla
-        val crearTablaUsuarios = """
+        //INFO DE LA TABLA FAVORITOS
+        private const val TABLE_FAVORITOS = "pokemonFavorito"
+        private const val COL_ID_POKEMON = "idPokemon"
+        private const val COL_NOMBRE_POKEMON = "nombrePokemom"
+        private const val COL_ALTURA_POKEMON = "alturaPokemon"
+        private const val COL_PESO_P0KEMON = "pesoPokemon"
+        private const val COL_IMAGEN = "imagenPokemon"
+        //CREAR AMBAS TBLAS EN LA BASE DE DATOS
+        private const val crearTablaUsuarios = """
             CREATE TABLE $TABLE_USUARIOS(
             $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT,
             $COL_NOMBRE TEXT NOT NULL,
             $COL_CORREO TEXT NOT NULL,
             $COL_PASSWORD TEXT NOT NULL
             )
-            """.trimIndent()
+            """
 
-        //Crear la tabla de usuarios
+
+    }
+
+    //Metodo onCreate --- Crea la BD
+    override fun onCreate(db: SQLiteDatabase?) {
+        //Crear la tabla para la aplicacion
+
         db?.execSQL(crearTablaUsuarios)
     }
 
