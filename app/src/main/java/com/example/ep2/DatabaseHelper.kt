@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.ep2.model.Pokemon
 
 //BASE DE DATOS DEL INICIO DE SESION
 
@@ -148,6 +147,7 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
             SQLiteDatabase.CONFLICT_IGNORE
         )
 
+        db.close()
         return resultado != -1L
     }
 
@@ -160,6 +160,7 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
             "$COL_ID_POKEMON = ?",
             arrayOf(idPokemon.toString())
         )
+        db.close()
         return filas_afectadas > 0
     }
 
@@ -175,6 +176,7 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         // VERIFICAR SI EXISTE EL REGISTRO
         val existe = cursor.moveToFirst()
         cursor.close()
+        db.close()
         return existe
     }
 

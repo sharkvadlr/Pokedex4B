@@ -12,13 +12,12 @@ import com.bumptech.glide.Glide
 class DetailsActivity : AppCompatActivity() {
 
     private lateinit var imgPokemonDetalle: ImageView
+    private lateinit var btnFavorito: ImageButton
     private lateinit var tvNombrePokemonDetalle: TextView
     private lateinit var tvIdPokemonDetalle: TextView
     private lateinit var tvDetallesPokemon: TextView
-    private lateinit var btnFavorito: ImageButton
-
     private lateinit var db: DatabaseHelper
-    private var esFavorito = false
+    private var pokemonFavorito = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,20 +25,20 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_details)
 
         imgPokemonDetalle = findViewById(R.id.imgPokemonDetalle)
+        btnFavorito = findViewById(R.id.btnFavorito)
         tvNombrePokemonDetalle = findViewById(R.id.tvNombrePokemonDetalle)
         tvIdPokemonDetalle = findViewById(R.id.tvIdPokemonDetalle)
         tvDetallesPokemon = findViewById(R.id.tvDetallesPokemon)
-        btnFavorito = findViewById(R.id.btnFavorito)
-
         db = DatabaseHelper(this)
-
         mostrarInformacionPokemon()
-        configurarBotonFavorito()
     }
 
+    // MÉTODO PARA MOSTRAR LA INFORMACION DE UN ALBUM
     private fun mostrarInformacionPokemon() {
-        val idPokemon = intent.getStringExtra("ID_POKEMON") ?: "0"
-        val nombrePokemon = intent.getStringExtra("NOMBRE_POKEMON") ?: "Pokémon"
+
+        val idPokemonString = intent.getStringExtra("ID_POKEMON") ?: "0"
+        val idPokemon = idPokemonString.toLongOrNull() ?: 0L
+        val nombrePokemon = intent.getStringExtra("NOMBRE_POKEMON") ?: "Pokémon sin nombre"
         val alturaPokemon = intent.getIntExtra("ALTURA_POKEMON", 0)
         val pesoPokemon = intent.getIntExtra("PESO_POKEMON", 0)
         val imagenPokemon = intent.getStringExtra("IMG_POKEMON") ?: ""
@@ -49,7 +48,7 @@ class DetailsActivity : AppCompatActivity() {
         val pesoKg = pesoPokemon / 10.0
 
         tvNombrePokemonDetalle.text = nombreFormatted
-        tvIdPokemonDetalle.text = "#$idPokemon"
+        tvIdPokemonDetalle.text = "#$idPokemonString"
         tvDetallesPokemon.text = "Altura: ${alturaMetros} m | Peso: ${pesoKg} kg"
 
         Glide.with(this)
@@ -58,33 +57,44 @@ class DetailsActivity : AppCompatActivity() {
             .into(imgPokemonDetalle)
 
         // Verificar que el album exista como favorito
-        if(idPokemon != -1L){
-            pokemon
+        if (idPokemon != -1L) {
+            pokemonFavorito = db.existePokemonFavorito(idPokemon)
+            if (pokemonFavorito) {
+                btnFavorito.setImageResource(R.drawable.baseline_favorite_24)
+            } else {
+                btnFavorito.setImageResource(R.drawable.no_favorite)
+            }
         }
-    }
-
-    private fun configurarBotonFavorito() {
-        val idPokemon = intent.getStringExtra("ID_POKEMON") ?: "0"
-        val nombrePokemon = intent.getStringExtra("NOMBRE_POKEMON") ?: "Pokémon"
 
         btnFavorito.setOnClickListener {
-            if (esFavorito) {
-                val eliminar = db.eliminarFavorito(idPokemon)
-                if (eliminar) {
-                    esFavorito = false
-                    btnFavorito.setImageResource(R.drawable.no_favorite)
-                    Toast.makeText(this, "Pokemon $nombrePokemon eliminado de favoritos", Toast.LENGTH_SHORT).show()
+
+
+            if (pokemonFavorito) {
+                //btnFavorito.setImageResource(R.drawable.baseline_favorite_24)
+                val eliminado = db.eliminarAlbumFavorito(idPokemon)
+                btnFavorito.setImageResource(R.drawable.no_favorite)
+                if (eliminado) {
+                    pokemonFavorito = !pokemonFavorito
+                    Toast.makeText(this, "Pokemon $nombreFormatted eliminado de favoritos", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                val guardado = db.guardarPokemonFavorito()
+                val guardado = db.guardarPokemonFavorito(
+                    idPokemon = idPokemon,
+                    nombrePokemon = nombreFormatted,
+                    alturaPokemon = "${alturaMetros} m",
+                    pesoPokemon = "${pesoKg} kg",
+                    imagenPokemon = imagenPokemon
+                )
+                btnFavorito.setImageResource(R.drawable.baseline_favorite_24)
+                // Evaluar si la inseción fue correcta
                 if (guardado) {
-                    esFavorito = true
-                    btnFavorito.setImageResource(R.drawable.baseline_favorite_24)
-                    Toast.makeText(this, "Pokemon $nombrePokemon agregado a favoritos", Toast.LENGTH_SHORT).show()
+                    pokemonFavorito = !pokemonFavorito
+                    Toast.makeText(this, "Pokemon $nombreFormatted agregado a favoritos", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "Pokemon $nombrePokemon ya se encuentra en favoritos", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Pokemon $nombreFormatted ya se encuentra en favoritos", Toast.LENGTH_SHORT).show()
                 }
             }
+
         }
     }
 }
