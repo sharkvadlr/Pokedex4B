@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.ep2.model.Pokemon
 
 //BASE DE DATOS DEL INICIO DE SESION
 
@@ -61,14 +62,17 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
     //Metodo onCreate --- Crea la BD
     override fun onCreate(db: SQLiteDatabase?) {
         //Crear la tabla para la aplicacion
-
+        db?.execSQL(crearTablaFavoritos)
         db?.execSQL(crearTablaUsuarios)
     }
 
     //Metodo onUpgrade --- Actualiza la BD
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_USUARIOS")
-        onCreate(db)
+
+        //Verificar la version de la bd para evistar borrar los datos
+        if (oldVersion < 1){
+            db?.execSQL(crearTablaFavoritos)
+        }
     }
 
     //Metodo pra crear un usuario
@@ -119,5 +123,10 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         db.close()
 
         return usuarioEncontrado
+    }
+
+    //METODO PARA GUARDAR LA INFORMACION DEL API
+    fun guardarPokemonFavorito(idPokemon: Long, nombrePokemon: String, alturaPokemon: String, pesoPokemon: ){
+
     }
 }
