@@ -20,7 +20,7 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
 
         //INFO DE LA BD
         private const val DATABASE_NAME = "pokedex.bd"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         //Info. de las tablas en la bd
         private const val TABLE_USUARIOS = "usuarios"
@@ -62,15 +62,15 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
     //Metodo onCreate --- Crea la BD
     override fun onCreate(db: SQLiteDatabase?) {
         //Crear la tabla para la aplicacion
-        db?.execSQL(crearTablaFavoritos)
         db?.execSQL(crearTablaUsuarios)
+        db?.execSQL(crearTablaFavoritos)
     }
 
     //Metodo onUpgrade --- Actualiza la BD
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
 
         //Verificar la version de la bd para evistar borrar los datos
-        if (oldVersion < 1){
+        if (oldVersion < 2){
             db?.execSQL(crearTablaFavoritos)
         }
     }
@@ -98,6 +98,8 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         return  resultado != -1L
     }
 
+
+    // MÉTODO PARA INICIAR SESIÓN
     fun iniciarSesion(email : String, password: String) : Boolean {
 
         val db = readableDatabase
@@ -132,7 +134,6 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
 
         //Crear la variable par pasar los valores de la API
         val valores = ContentValues().apply {
-
             put(COL_ID_POKEMON, idPokemon)
             put(COL_NOMBRE_POKEMON, nombrePokemon)
             put(COL_ALTURA_POKEMON, alturaPokemon)
@@ -149,4 +150,32 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
 
         return resultado != -1L
     }
+
+    // MÉTODO PARA ELIMINAR EL POKEMON DE FAVORITOS
+    fun eliminarAlbumFavorito(idPokemon: Long) : Boolean{
+        val db = writableDatabase
+
+        val filas_afectadas = db.delete(
+            TABLE_FAVORITOS,
+            "$COL_ID_POKEMON = ?",
+            arrayOf(idPokemon.toString())
+        )
+        return filas_afectadas > 0
+    }
+
+    // MÉTODO PARA VERIFICAR SI UN POKEMON ESTÁ REGISTRADO
+    fun existePokemonFavorito(idPokemon: Long) : Boolean{
+        val db = readableDatabase
+
+        val cursor = db.rawQuery(
+            "SELECT $COL_ID_POKEMON FROM $TABLE_FAVORITOS WHERE $COL_ID_POKEMON = ?",
+            arrayOf(idPokemon.toString())
+        )
+
+        // VERIFICAR SI EXISTE EL REGISTRO
+        val existe = cursor.moveToFirst()
+        cursor.close()
+        return existe
+    }
+
 }
