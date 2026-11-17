@@ -191,6 +191,19 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, "Error al iniciar", Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
+    //METODO PARA DEJAR LA SESION ACTIVA
+    override fun onStart() {
+        super.onStart()
+
+        val usuarioActual = auth.currentUser
+
+        if (usuarioActual != null){
+            val intent = Intent(this, HomeActivity::class.java)
+
+            startActivity(intent)
+            finish()
+        }
     }
 }

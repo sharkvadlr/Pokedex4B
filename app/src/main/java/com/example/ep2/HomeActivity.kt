@@ -1,17 +1,24 @@
 package com.example.ep2
 
 import android.content.Intent
+import androidx.credentials.CredentialManager
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.ep2.model.Pokemon
 import com.example.ep2.model.PokeResponse
 import com.example.ep2.network.RetrofitClient
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,14 +27,21 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var tvResultado: TextView
     private lateinit var contenedorPokemon: LinearLayout
+    private lateinit var auth : FirebaseAuth
+    private lateinit var credentialManager : CredentialManager
+    private lateinit var bottomNavigation : BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
 
+        bottomNavigation = findViewById(R.id.bottomNavigation)
         tvResultado = findViewById(R.id.tvEstado)
         contenedorPokemon = findViewById(R.id.contenedorPokemon)
+
+        auth = FirebaseAuth.getInstance()
+        credentialManager = CredentialManager.create(this)
 
         contenedorPokemon.removeAllViews()
 
@@ -129,6 +143,63 @@ class HomeActivity : AppCompatActivity() {
                 }
                 startActivity(intent)
             }
+        }
+    }
+
+    //METODO PARA EL FUNCIONAMIENTO DEL MENU
+    private fun menuNavegacion(){
+
+        //Verificar la opcion seleccionada del menu
+        bottomNavigation.selectedItemId = R.id.nav_inicio
+
+        bottomNavigation.setOnItemSelectedListener { item ->
+
+            when(item.itemId){
+
+                R.id.nav_inicio -> {
+                    true
+                }
+
+                R.id.nav_favoritos -> {
+                    val intent = Intent(this, FavoritesActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_salir ->{
+                    cerrarSesionGoogle()
+                    true
+                }
+
+                else -> false
+            }
+
+        }
+
+    }
+
+    //METODO PARA CERRAR SESION
+    private fun cerrarSesionGoogle(){
+        auth.signOut()
+
+        lifecycleScope.launch {
+
+            try {
+
+                credentialManager.clearCredentialState(
+                    ClearCredentialStateRequest()
+                )
+
+            } catch (e : Exception){
+                Toast.makeText(this@HomeActivity, "Error al cerrar sesión", Toast.LENGTH_SHORT).show()
+            }
+
+            val intent = Intent(this@HomeActivity, MainActivity::class.java)
+
+            //Configurar el Intent para que inicie la app desde cero
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+            startActivity(intent)
         }
     }
 }
