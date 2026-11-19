@@ -6,7 +6,7 @@
         />
 
     <item android:id="@+id/nav_favoritos"
-        android:icon="@drawable/favorito"
+        android:icon="@drawable/pokefav"
         android:title="Favoritos"/>
 
     <item android:id="@+id/nav_salir"

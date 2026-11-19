@@ -45,8 +45,14 @@ class HomeActivity : AppCompatActivity() {
 
         contenedorPokemon.removeAllViews()
 
-        // Cargamos las 9 generaciones ordenadas
         cargarGeneracionSecuencial(1, 9)
+
+        menuNavegacion()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bottomNavigation.selectedItemId = R.id.nav_inicio
     }
 
     private fun cargarGeneracionSecuencial(genIdActual: Int, maxGen: Int) {
@@ -126,9 +132,11 @@ class HomeActivity : AppCompatActivity() {
         tvNombrePokemon.text = pokemon.name?.replaceFirstChar { it.uppercase() } ?: "Pokemon sin nombre"
         tvIdPokemon.text = "#${pokemon.id}"
 
-        Glide.with(this@HomeActivity)
-            .load(pokemon.obtenerImagen())
-            .into(imgPokemon)
+        if (!isDestroyed && !isFinishing) {
+            Glide.with(this@HomeActivity)
+                .load(pokemon.obtenerImagen())
+                .into(imgPokemon)
+        }
 
         vistaPokemon.setOnClickListener {
             val idPokemon = pokemon.id
@@ -139,23 +147,18 @@ class HomeActivity : AppCompatActivity() {
                     putExtra("NOMBRE_POKEMON", pokemon.name)
                     putExtra("ALTURA_POKEMON", pokemon.height ?: 0)
                     putExtra("PESO_POKEMON", pokemon.weight ?: 0)
-                    putExtra("IMG_POKEMON", pokemon.obtenerGif()) // 👈 Envía el GIF animado
+                    putExtra("IMG_POKEMON", pokemon.obtenerGif())
                 }
                 startActivity(intent)
             }
         }
     }
 
-    //METODO PARA EL FUNCIONAMIENTO DEL MENU
     private fun menuNavegacion(){
-
-        //Verificar la opcion seleccionada del menu
         bottomNavigation.selectedItemId = R.id.nav_inicio
 
         bottomNavigation.setOnItemSelectedListener { item ->
-
             when(item.itemId){
-
                 R.id.nav_inicio -> {
                     true
                 }
@@ -173,32 +176,23 @@ class HomeActivity : AppCompatActivity() {
 
                 else -> false
             }
-
         }
-
     }
 
-    //METODO PARA CERRAR SESION
     private fun cerrarSesionGoogle(){
         auth.signOut()
 
         lifecycleScope.launch {
-
             try {
-
                 credentialManager.clearCredentialState(
                     ClearCredentialStateRequest()
                 )
-
             } catch (e : Exception){
                 Toast.makeText(this@HomeActivity, "Error al cerrar sesión", Toast.LENGTH_SHORT).show()
             }
 
             val intent = Intent(this@HomeActivity, MainActivity::class.java)
-
-            //Configurar el Intent para que inicie la app desde cero
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
             startActivity(intent)
         }
     }

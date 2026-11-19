@@ -4,31 +4,24 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.ep2.model.PokemonFavorito
 
-//BASE DE DATOS DEL INICIO DE SESION
-
-//DatabaseHelper hereda de la cls SQLite
 class DatabaseHelper (context: Context) : SQLiteOpenHelper (
     context,
     DATABASE_NAME,
     null,
     DATABASE_VERSION
 ){
-    //DATOS DE LA BD
     companion object{
-
-        //INFO DE LA BD
         private const val DATABASE_NAME = "pokedex.bd"
         private const val DATABASE_VERSION = 2
 
-        //Info. de las tablas en la bd
         private const val TABLE_USUARIOS = "usuarios"
         private const val COL_ID = "id"
         private const val COL_NOMBRE = "nombre"
         private const val COL_CORREO = "correo"
         private const val COL_PASSWORD = "password"
 
-        //INFO DE LA TABLA FAVORITOS
         private const val TABLE_FAVORITOS = "pokemonFavorito"
         private const val COL_ID_FAVORITO = "id"
         private const val COL_ID_POKEMON = "idPokemon"
@@ -36,7 +29,7 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         private const val COL_ALTURA_POKEMON = "alturaPokemon"
         private const val COL_PESO_P0KEMON = "pesoPokemon"
         private const val COL_IMAGEN = "imagenPokemon"
-        //CREAR AMBAS TBLAS EN LA BASE DE DATOS
+
         private const val crearTablaUsuarios = """
             CREATE TABLE $TABLE_USUARIOS(
             $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -58,66 +51,44 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         """
     }
 
-    //Metodo onCreate --- Crea la BD
     override fun onCreate(db: SQLiteDatabase?) {
-        //Crear la tabla para la aplicacion
         db?.execSQL(crearTablaUsuarios)
         db?.execSQL(crearTablaFavoritos)
     }
 
-    //Metodo onUpgrade --- Actualiza la BD
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-
-        //Verificar la version de la bd para evistar borrar los datos
         if (oldVersion < 2){
             db?.execSQL(crearTablaFavoritos)
         }
     }
 
-    //Metodo pra crear un usuario
     fun registrarUsuario(nombre : String, correo : String, password : String) : Boolean {
-
-        //Crear variable para escribir en la BD
         val db = writableDatabase
 
-        //Insertar los datos
         val datos = ContentValues().apply {
             put(COL_NOMBRE, nombre)
             put(COL_CORREO, correo)
             put(COL_PASSWORD, password)
         }
 
-        //Ejecutar la insercion de datos
         val resultado = db.insert(TABLE_USUARIOS, null, datos)
-
-        //Cerrar conexion de la BD
         db.close()
 
-        //Regresar e valor obtenido de la insercion (true or false)
-        return  resultado != -1L
+        return resultado != -1L
     }
 
-
-    // MÉTODO PARA INICIAR SESIÓN
     fun iniciarSesion(email : String, password: String) : Boolean {
-
         val db = readableDatabase
 
-        //Crear consulta
         val query_sql = """
-            
             SELECT * FROM $TABLE_USUARIOS
             WHERE $COL_CORREO = ? AND $COL_PASSWORD = ?
-            
         """.trimIndent()
-
-        //Crear un curso que permite recorrer todos los registros
 
         val cursor = db.rawQuery(
             query_sql, arrayOf(email, password)
         )
 
-        //Verificar cuantos resultados  encuentra el cursor
         val usuarioEncontrado = cursor.count > 0
 
         cursor.close()
@@ -126,12 +97,9 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         return usuarioEncontrado
     }
 
-    //METODO PARA GUARDAR LA INFORMACION DEL API
     fun guardarPokemonFavorito(idPokemon: Long, nombrePokemon: String, alturaPokemon: String, pesoPokemon: String, imagenPokemon: String) : Boolean {
-
         val db = writableDatabase
 
-        //Crear la variable par pasar los valores de la API
         val valores = ContentValues().apply {
             put(COL_ID_POKEMON, idPokemon)
             put(COL_NOMBRE_POKEMON, nombrePokemon)
@@ -151,7 +119,6 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         return resultado != -1L
     }
 
-    // MÉTODO PARA ELIMINAR EL POKEMON DE FAVORITOS
     fun eliminarAlbumFavorito(idPokemon: Long) : Boolean{
         val db = writableDatabase
 
@@ -164,7 +131,6 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
         return filas_afectadas > 0
     }
 
-    // MÉTODO PARA VERIFICAR SI UN POKEMON ESTÁ REGISTRADO
     fun existePokemonFavorito(idPokemon: Long) : Boolean{
         val db = readableDatabase
 
@@ -173,11 +139,44 @@ class DatabaseHelper (context: Context) : SQLiteOpenHelper (
             arrayOf(idPokemon.toString())
         )
 
-        // VERIFICAR SI EXISTE EL REGISTRO
         val existe = cursor.moveToFirst()
         cursor.close()
         db.close()
         return existe
     }
 
+    fun obtenerPokemonesFavoritos(): List<PokemonFavorito>{
+        val listaFavoritos = mutableListOf<PokemonFavorito>()
+        val db = readableDatabase
+
+        val query_sql = """
+            SELECT
+            $COL_ID_POKEMON,
+            $COL_NOMBRE_POKEMON,
+            $COL_ALTURA_POKEMON,
+            $COL_PESO_P0KEMON,
+            $COL_IMAGEN
+            FROM $TABLE_FAVORITOS
+            ORDER BY $COL_ID_FAVORITO DESC
+        """.trimIndent()
+
+        val cursor = db.rawQuery(query_sql, null)
+
+        if(cursor.moveToFirst()){
+            do {
+                val pokemon = PokemonFavorito(
+                    idPokemon = cursor.getLong(0),
+                    nombrePokemon = cursor.getString(1) ?: "Pokemon Desconocido",
+                    alturaPokemon = cursor.getString(2)?.toIntOrNull() ?: 0,
+                    pesoPokemon = cursor.getString(3)?.toIntOrNull() ?: 0,
+                    imagenPokemon = cursor.getString(4) ?: ""
+                )
+                listaFavoritos.add(pokemon)
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+        return listaFavoritos
+    }
 }

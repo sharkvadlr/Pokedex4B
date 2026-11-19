@@ -33,7 +33,6 @@ class DetailsActivity : AppCompatActivity() {
         mostrarInformacionPokemon()
     }
 
-    // MÉTODO PARA MOSTRAR LA INFORMACION DE UN ALBUM
     private fun mostrarInformacionPokemon() {
 
         val idPokemonString = intent.getStringExtra("ID_POKEMON") ?: "0"
@@ -56,7 +55,6 @@ class DetailsActivity : AppCompatActivity() {
             .load(imagenPokemon)
             .into(imgPokemonDetalle)
 
-        // Verificar que el album exista como favorito
         if (idPokemon != -1L) {
             pokemonFavorito = db.existePokemonFavorito(idPokemon)
             if (pokemonFavorito) {
@@ -67,10 +65,7 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         btnFavorito.setOnClickListener {
-
-
             if (pokemonFavorito) {
-                //btnFavorito.setImageResource(R.drawable.baseline_favorite_24)
                 val eliminado = db.eliminarAlbumFavorito(idPokemon)
                 btnFavorito.setImageResource(R.drawable.no_favorite)
                 if (eliminado) {
@@ -81,12 +76,11 @@ class DetailsActivity : AppCompatActivity() {
                 val guardado = db.guardarPokemonFavorito(
                     idPokemon = idPokemon,
                     nombrePokemon = nombreFormatted,
-                    alturaPokemon = "${alturaMetros} m",
-                    pesoPokemon = "${pesoKg} kg",
+                    alturaPokemon = alturaPokemon.toString(),
+                    pesoPokemon = pesoPokemon.toString(),
                     imagenPokemon = imagenPokemon
                 )
                 btnFavorito.setImageResource(R.drawable.baseline_favorite_24)
-                // Evaluar si la inseción fue correcta
                 if (guardado) {
                     pokemonFavorito = !pokemonFavorito
                     Toast.makeText(this, "Pokemon $nombreFormatted agregado a favoritos", Toast.LENGTH_SHORT).show()
@@ -94,7 +88,6 @@ class DetailsActivity : AppCompatActivity() {
                     Toast.makeText(this, "Pokemon $nombreFormatted ya se encuentra en favoritos", Toast.LENGTH_SHORT).show()
                 }
             }
-
         }
     }
 }
