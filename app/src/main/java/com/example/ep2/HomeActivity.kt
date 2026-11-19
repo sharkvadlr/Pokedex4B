@@ -27,9 +27,9 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var tvResultado: TextView
     private lateinit var contenedorPokemon: LinearLayout
-    private lateinit var auth : FirebaseAuth
-    private lateinit var credentialManager : CredentialManager
-    private lateinit var bottomNavigation : BottomNavigationView
+    private lateinit var auth: FirebaseAuth
+    private lateinit var credentialManager: CredentialManager
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +87,8 @@ class HomeActivity : AppCompatActivity() {
 
                     for (i in 0 until limite) {
                         val especie = especiesOrdenadas[i]
-                        especie.name?.let { nombre ->
+                        val idEspecie = especie.url?.trimEnd('/')?.substringAfterLast('/')
+                        if (!idEspecie.isNullOrEmpty()) {
                             val vistaPokemon = layoutInflater.inflate(
                                 R.layout.item_card_pokemon,
                                 contenedorHorizontal,
@@ -95,7 +96,7 @@ class HomeActivity : AppCompatActivity() {
                             )
 
                             contenedorHorizontal.addView(vistaPokemon)
-                            obtenerYMostrarPokemonIndividual(nombre, vistaPokemon)
+                            obtenerYMostrarPokemonIndividual(idEspecie, vistaPokemon)
                         }
                     }
 
@@ -111,8 +112,8 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-    private fun obtenerYMostrarPokemonIndividual(nombre: String, vistaPokemon: View) {
-        RetrofitClient.api.obtenerPokemon(nombre).enqueue(object : Callback<Pokemon> {
+    private fun obtenerYMostrarPokemonIndividual(idOrName: String, vistaPokemon: View) {
+        RetrofitClient.api.obtenerPokemon(idOrName).enqueue(object : Callback<Pokemon> {
             override fun onResponse(call: Call<Pokemon>, response: Response<Pokemon>) {
                 if (response.isSuccessful && response.body() != null) {
                     val pokemon = response.body()!!
@@ -154,11 +155,11 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun menuNavegacion(){
+    private fun menuNavegacion() {
         bottomNavigation.selectedItemId = R.id.nav_inicio
 
         bottomNavigation.setOnItemSelectedListener { item ->
-            when(item.itemId){
+            when (item.itemId) {
                 R.id.nav_inicio -> {
                     true
                 }
@@ -169,7 +170,7 @@ class HomeActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.nav_salir ->{
+                R.id.nav_salir -> {
                     cerrarSesionGoogle()
                     true
                 }
@@ -179,7 +180,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun cerrarSesionGoogle(){
+    private fun cerrarSesionGoogle() {
         auth.signOut()
 
         lifecycleScope.launch {
@@ -187,7 +188,7 @@ class HomeActivity : AppCompatActivity() {
                 credentialManager.clearCredentialState(
                     ClearCredentialStateRequest()
                 )
-            } catch (e : Exception){
+            } catch (e: Exception) {
                 Toast.makeText(this@HomeActivity, "Error al cerrar sesión", Toast.LENGTH_SHORT).show()
             }
 

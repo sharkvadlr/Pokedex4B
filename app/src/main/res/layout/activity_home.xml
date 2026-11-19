@@ -6,14 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pokemon_grass"
-    tools:context=".HomeActivity">
+    tools:context=".HomeActivity"
+    >
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/pokemon_grass">
+        android:id="@+id/scrollHome"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/pokemon_grass"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/linerHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -57,9 +64,9 @@
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/white"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menu_bottom" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
