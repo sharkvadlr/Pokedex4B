@@ -1,7 +1,11 @@
 package com.example.ep2
 
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -15,6 +19,10 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -30,6 +38,12 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
+
+    companion object{
+        private const val CANAL_ID = "canal_general"
+        private const val NOTIFICACION_ID = 1
+        private const val CODIGO_PERMISO = 100
+    }
     private lateinit var etCorreo : EditText
     private lateinit var etPassword : EditText
     private lateinit var btnIngresar : Button
@@ -89,6 +103,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        crearCanalNoti()
+
 
     }
 
@@ -134,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                 // Crear variable para guardar al usuario actual
                 val usuario = auth.currentUser
                 Toast.makeText(this, "Bienvenidos ${usuario?.displayName}", Toast.LENGTH_SHORT).show()
-
+                mostrarNoti()
                 // Enviar al usuario a HomeActivity
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
@@ -205,5 +221,61 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun crearCanalNoti(){
+
+        //Evaluar el permiso del usuario para manejar notificaciones
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+
+            val canal = NotificationChannel(
+                CANAL_ID,
+                "Notificaciones generales",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+
+            canal.description = "Canal de envío de notificaciones sobre la BD"
+
+            //Indicar el uso de notificaciones
+            val adminNotificaciones = getSystemService(NotificationManager::class.java)
+
+            adminNotificaciones.createNotificationChannel(canal)
+        }
+    }
+
+    private fun mostrarNoti(){
+
+        //VERIFICAR LOS PERMISOS SELECCIONADOS POR EL USUARIO
+        //Si el usuario no ha dado ermiso de enviar notificaciones
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+                this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ){
+
+            //Volver a pedir permiso al usuario
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                com.example.ep2.MainActivity.Companion.CODIGO_PERMISO
+            )
+            Toast.makeText(this, "Autoriza el envio de notificaciones", Toast.LENGTH_SHORT).show()
+
+            return
+        }
+
+        val notificacion = NotificationCompat.Builder(this,
+            com.example.ep2.MainActivity.Companion.CANAL_ID
+        )
+            .setSmallIcon(R.drawable.pokefav)
+            .setContentTitle("Pokedex")
+            .setContentText("Inicio de sesión con Google")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .build()
+
+        NotificationManagerCompat
+            .from(this)
+            .notify(
+                com.example.ep2.MainActivity.Companion.NOTIFICACION_ID,
+                notificacion
+            )
+
     }
 }
